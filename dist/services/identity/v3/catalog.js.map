@@ -1,0 +1,1 @@
+{"version":3,"file":"catalog.js","sourceRoot":"","sources":["../../../../src/oms/services/identity/v3/catalog.ts"],"names":[],"mappings":";;;;;;;;;AAOA,MAAM,OAAO,GAAG,kBAAkB,CAAA;AAGlC,MAAM,UAAgB,WAAW,CAAC,MAAkB;;QAChD,MAAM,IAAI,GAAG,MAAM,MAAM,CAAC,GAAG,CAA+B,EAAE,GAAG,EAAE,OAAO,EAAE,CAAC,CAAA;QAC7E,OAAO,IAAI,CAAC,IAAI,CAAC,OAAO,CAAA;IAC5B,CAAC;CAAA"}
