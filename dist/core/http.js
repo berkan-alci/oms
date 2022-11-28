@@ -54,6 +54,8 @@ export function mergeHeaders(one, two) {
     }
     const headers = normalizeHeaders(one);
     if (two) {
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        //@ts-ignore
         for (const [k, v] of normalizeHeaders(two)) {
             headers.append(k, v);
         }
@@ -206,6 +208,8 @@ export default class HttpClient {
                     response.data = JSON.parse(yield response.raw.text());
                 }
                 // will be validated against own 'schema' field, if one is provided
+                // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+                //@ts-ignore
                 const result = validate(response.data, merged.schema);
                 if (!result.valid) {
                     throw Error(`Failed JSON Schema validation: ${result.errors}`);
