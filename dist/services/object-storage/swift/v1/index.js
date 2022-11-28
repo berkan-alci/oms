@@ -1,3 +1,4 @@
+"use strict";
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -7,10 +8,15 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-import Service from '../../../base';
-import { createContainer, deleteContainer, getContainer, showContainerMetadata } from './container';
-import { getAccount, showAccountMetadata, updateAccountMetadata } from './accounts';
-export class SwiftV1 extends Service {
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.SwiftV1 = void 0;
+const base_1 = __importDefault(require("../../../base"));
+const container_1 = require("./container");
+const accounts_1 = require("./accounts");
+class SwiftV1 extends base_1.default {
     constructor(url, client) {
         super(url, client);
     }
@@ -19,7 +25,7 @@ export class SwiftV1 extends Service {
      */
     getAccount() {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield getAccount(this.client);
+            return yield (0, accounts_1.getAccount)(this.client);
         });
     }
     /**
@@ -27,7 +33,7 @@ export class SwiftV1 extends Service {
      */
     showAccountMetadata() {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield showAccountMetadata(this.client);
+            return yield (0, accounts_1.showAccountMetadata)(this.client);
         });
     }
     /**
@@ -39,12 +45,12 @@ export class SwiftV1 extends Service {
      */
     updateAccountMetadata(metadata, quota) {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield updateAccountMetadata(this.client, metadata, quota);
+            return yield (0, accounts_1.updateAccountMetadata)(this.client, metadata, quota);
         });
     }
     createContainer(name, acls, metadata) {
         return __awaiter(this, void 0, void 0, function* () {
-            yield createContainer(this.client, name, acls, metadata);
+            yield (0, container_1.createContainer)(this.client, name, acls, metadata);
         });
     }
     listContainers() {
@@ -54,19 +60,20 @@ export class SwiftV1 extends Service {
     }
     showContainerMetadata(name) {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield showContainerMetadata(this.client, name);
+            return yield (0, container_1.showContainerMetadata)(this.client, name);
         });
     }
     getContainer(name, objectListOpts) {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield getContainer(this.client, name, objectListOpts);
+            return yield (0, container_1.getContainer)(this.client, name, objectListOpts);
         });
     }
     deleteContainer(name) {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield deleteContainer(this.client, name);
+            return yield (0, container_1.deleteContainer)(this.client, name);
         });
     }
 }
+exports.SwiftV1 = SwiftV1;
 SwiftV1.type = 'object-store';
 //# sourceMappingURL=index.js.map

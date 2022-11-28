@@ -1,3 +1,4 @@
+"use strict";
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -7,20 +8,26 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-import Service from '../../base';
-import { listKeyPairs } from './keypairs';
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.ComputeV2 = void 0;
+const base_1 = __importDefault(require("../../base"));
+const keypairs_1 = require("./keypairs");
 /**
  * Compute v2 (Nova) service client
  */
-export class ComputeV2 extends Service {
+class ComputeV2 extends base_1.default {
     constructor(url, client) {
         super(url, client);
     }
     listKeyPairs() {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield listKeyPairs(this.client);
+            return yield (0, keypairs_1.listKeyPairs)(this.client);
         });
     }
 }
+exports.ComputeV2 = ComputeV2;
 ComputeV2.type = 'compute';
 //# sourceMappingURL=index.js.map

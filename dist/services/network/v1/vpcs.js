@@ -1,3 +1,4 @@
+"use strict";
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -7,39 +8,49 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-import { joinURL } from '../../../core/http';
-import isCidr from 'is-cidr';
-export const url = '/vpcs';
-export function listVPCs(client) {
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.getVPCStatus = exports.deleteVPC = exports.updateVPC = exports.createVPC = exports.listVPCs = exports.url = void 0;
+const http_1 = require("../../../core/http");
+const is_cidr_1 = __importDefault(require("is-cidr"));
+exports.url = '/vpcs';
+function listVPCs(client) {
     return __awaiter(this, void 0, void 0, function* () {
-        const resp = yield client.get({ url: url });
+        const resp = yield client.get({ url: exports.url });
         return resp.data.vpcs;
     });
 }
-export function createVPC(client, opts) {
+exports.listVPCs = listVPCs;
+function createVPC(client, opts) {
     return __awaiter(this, void 0, void 0, function* () {
-        if (opts.cidr && !isCidr(opts.cidr)) {
+        if (opts.cidr && !(0, is_cidr_1.default)(opts.cidr)) {
             throw Error(`Invalid CIDR: ${opts.cidr}`);
         }
-        const resp = yield client.post({ url: url, json: { vpc: opts } });
+        const resp = yield client.post({ url: exports.url, json: { vpc: opts } });
         return resp.data.vpc;
     });
 }
-export function updateVPC(client, vpcID, opts) {
+exports.createVPC = createVPC;
+function updateVPC(client, vpcID, opts) {
     return __awaiter(this, void 0, void 0, function* () {
-        const resp = yield client.put({ url: joinURL(url, vpcID), json: { vpc: opts } });
+        const resp = yield client.put({ url: (0, http_1.joinURL)(exports.url, vpcID), json: { vpc: opts } });
         return resp.data.vpc;
     });
 }
-export function deleteVPC(client, vpcID) {
+exports.updateVPC = updateVPC;
+function deleteVPC(client, vpcID) {
     return __awaiter(this, void 0, void 0, function* () {
-        yield client.delete({ url: joinURL(url, vpcID) });
+        yield client.delete({ url: (0, http_1.joinURL)(exports.url, vpcID) });
     });
 }
-export function getVPCStatus(client, vpcID) {
+exports.deleteVPC = deleteVPC;
+function getVPCStatus(client, vpcID) {
     return __awaiter(this, void 0, void 0, function* () {
-        const resp = yield client.get({ url: joinURL(url, vpcID) });
+        const resp = yield client.get({ url: (0, http_1.joinURL)(exports.url, vpcID) });
         return resp.data.vpc;
     });
 }
+exports.getVPCStatus = getVPCStatus;
 //# sourceMappingURL=vpcs.js.map

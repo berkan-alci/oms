@@ -1,3 +1,18 @@
+"use strict";
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __exportStar = (this && this.__exportStar) || function(m, exports) {
+    for (var p in m) if (p !== "default" && !Object.prototype.hasOwnProperty.call(exports, p)) __createBinding(exports, m, p);
+};
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -7,17 +22,22 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-import { getSignHeaders } from './core';
-import HttpClient from './core/http';
-import isEmpty from 'lodash/isEmpty';
-import { IdentityV3 } from './services';
-export * from './core';
-export * from './services';
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.Client = void 0;
+const core_1 = require("./core");
+const http_1 = __importDefault(require("./core/http"));
+const isEmpty_1 = __importDefault(require("lodash/isEmpty"));
+const services_1 = require("./services");
+__exportStar(require("./core"), exports);
+__exportStar(require("./services"), exports);
 const defaultRegion = 'eu-de';
 /**
  * Client is base provider client
  */
-export class Client {
+class Client {
     set tokenID(v) {
         this.cloud.auth.token = v;
     }
@@ -49,7 +69,7 @@ export class Client {
                 cloud.region = cloud.auth.project_name.split('_', 1)[0];
             }
         }
-        this.httpClient = new HttpClient({});
+        this.httpClient = new http_1.default({});
         this.injectCommonHeaders();
         // register identity service
         this.registerService('identity', this.cloud.auth.auth_url);
@@ -67,7 +87,7 @@ export class Client {
         return srv;
     }
     getIdentity() {
-        return this.getService(IdentityV3);
+        return this.getService(services_1.IdentityV3);
     }
     /**
      * Load service endpoint catalog for the region
@@ -91,7 +111,7 @@ export class Client {
                     throw Error(`Missing AK/SK: ${JSON.stringify(this.cloud.auth)}`);
                 }
                 const url = new URL(config.url);
-                const signedHeaders = getSignHeaders({
+                const signedHeaders = (0, core_1.getSignHeaders)({
                     accessKeyId: this.cloud.auth.ak,
                     secretAccessKey: this.cloud.auth.sk,
                     regionName: '',
@@ -162,7 +182,7 @@ export class Client {
      */
     authenticate() {
         return __awaiter(this, void 0, void 0, function* () {
-            if (isEmpty(this.cloud.auth)) {
+            if ((0, isEmpty_1.default)(this.cloud.auth)) {
                 throw new Error('Missing auth options');
             }
             if (this.cloud.auth.ak && this.cloud.auth.sk) {
@@ -174,6 +194,7 @@ export class Client {
         });
     }
 }
+exports.Client = Client;
 const appJSON = 'application/json';
 const userAgent = 'OpenTelekomCloud JS/v1.0';
 function addCommonHeaders(cfg) {

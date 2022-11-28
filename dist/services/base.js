@@ -1,3 +1,4 @@
+"use strict";
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -14,22 +15,28 @@ var __asyncValues = (this && this.__asyncValues) || function (o) {
     function verb(n) { i[n] = o[n] && function (v) { return new Promise(function (resolve, reject) { v = o[n](v), settle(resolve, reject, v.done, v.value); }); }; }
     function settle(resolve, reject, d, v) { Promise.resolve(v).then(function(v) { resolve({ value: v, done: d }); }, reject); }
 };
-import { HttpError } from '../core/http';
-import cloneDeep from 'lodash/cloneDeep';
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.waitForResourceToBeDeleted = exports.waitFor = exports.Pager = void 0;
+const http_1 = require("../core/http");
+const cloneDeep_1 = __importDefault(require("lodash/cloneDeep"));
 /**
  * Service represents single service client
  */
-export default class Service {
+class Service {
     constructor(url, client) {
         this.projectID = '';
         this.client = client.child({ baseURL: url });
     }
 }
+exports.default = Service;
 Service.type = '';
 /**
  * Pager for lazy pagination implementation. <T> describes page structure
  */
-export class Pager {
+class Pager {
     constructor(opts, client) {
         this.pageOpts = opts;
         this.client = client;
@@ -99,7 +106,7 @@ export class Pager {
             return base;
         }
         if (!base) {
-            return cloneDeep(other);
+            return (0, cloneDeep_1.default)(other);
         }
         for (const k in base) {
             if (!base.hasOwnProperty(k) || !other.hasOwnProperty(k)) {
@@ -115,6 +122,7 @@ export class Pager {
         return base;
     }
 }
+exports.Pager = Pager;
 function sleep(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
 }
@@ -124,7 +132,7 @@ const maxInterval = 40000;
  * @param condition
  * @param timeoutSeconds
  */
-export function waitFor(condition, timeoutSeconds) {
+function waitFor(condition, timeoutSeconds) {
     return __awaiter(this, void 0, void 0, function* () {
         const timeLimit = Date.now() + timeoutSeconds * 1000;
         let pause = 1000;
@@ -140,12 +148,13 @@ export function waitFor(condition, timeoutSeconds) {
         throw Error(`Timeout (${timeoutSeconds}s) reached waiting for condition ${condition}`);
     });
 }
+exports.waitFor = waitFor;
 /**
  * Wait for resource to be deleted with increasing retry interval
  * @param checkMethod - method, possibly returning `HttpError(404)`
  * @param timeoutSeconds - maximum timeout
  */
-export function waitForResourceToBeDeleted(checkMethod, timeoutSeconds) {
+function waitForResourceToBeDeleted(checkMethod, timeoutSeconds) {
     return __awaiter(this, void 0, void 0, function* () {
         const timeLimit = Date.now() + timeoutSeconds * 1000;
         let pause = 0;
@@ -155,7 +164,7 @@ export function waitForResourceToBeDeleted(checkMethod, timeoutSeconds) {
                 yield checkMethod();
             }
             catch (e) {
-                if (e instanceof HttpError && e.statusCode === 404) {
+                if (e instanceof http_1.HttpError && e.statusCode === 404) {
                     return;
                 }
                 throw e;
@@ -165,4 +174,5 @@ export function waitForResourceToBeDeleted(checkMethod, timeoutSeconds) {
         throw Error(`Timeout (${timeoutSeconds}s) reached waiting for resource to be unavailable`);
     });
 }
+exports.waitForResourceToBeDeleted = waitForResourceToBeDeleted;
 //# sourceMappingURL=base.js.map

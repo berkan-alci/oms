@@ -1,3 +1,27 @@
+"use strict";
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -7,16 +31,18 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-import Service, { waitFor, waitForResourceToBeDeleted } from '../../base';
-import { HttpError } from '../../../core/http';
-import { createVPC, deleteVPC, getVPCStatus, listVPCs, updateVPC, } from './vpcs';
-import { createSubnet, deleteSubnet, getSubnetStatus, listSubnets, } from './subnets';
-import { createSecurityGroup, deleteSecurityGroup, listSecurityGroups, } from './secgroups';
-import { listPublicIPs } from './eips';
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.VpcV1 = void 0;
+const base_1 = __importStar(require("../../base"));
+const http_1 = require("../../../core/http");
+const vpcs_1 = require("./vpcs");
+const subnets_1 = require("./subnets");
+const secgroups_1 = require("./secgroups");
+const eips_1 = require("./eips");
 /**
  * VPC v1 service client
  */
-export class VpcV1 extends Service {
+class VpcV1 extends base_1.default {
     constructor(url, client) {
         super(url, client);
     }
@@ -25,7 +51,7 @@ export class VpcV1 extends Service {
      */
     listVPCs() {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield listVPCs(this.client);
+            return yield (0, vpcs_1.listVPCs)(this.client);
         });
     }
     /**
@@ -34,7 +60,7 @@ export class VpcV1 extends Service {
      */
     createVPC(opts) {
         return __awaiter(this, void 0, void 0, function* () {
-            const { id } = yield createVPC(this.client, opts);
+            const { id } = yield (0, vpcs_1.createVPC)(this.client, opts);
             let state = yield this.getVPC(id); // mutable state for waiting
             const statusOK = () => __awaiter(this, void 0, void 0, function* () {
                 state = yield this.getVPC(id);
@@ -43,7 +69,7 @@ export class VpcV1 extends Service {
             if (yield statusOK()) {
                 return state;
             }
-            yield waitFor(statusOK, 60);
+            yield (0, base_1.waitFor)(statusOK, 60);
             return state;
         });
     }
@@ -53,7 +79,7 @@ export class VpcV1 extends Service {
      */
     getVPC(vpcID) {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield getVPCStatus(this.client, vpcID);
+            return yield (0, vpcs_1.getVPCStatus)(this.client, vpcID);
         });
     }
     /**
@@ -63,7 +89,7 @@ export class VpcV1 extends Service {
      */
     updateVPC(vpcID, opts) {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield updateVPC(this.client, vpcID, opts);
+            return yield (0, vpcs_1.updateVPC)(this.client, vpcID, opts);
         });
     }
     /**
@@ -73,15 +99,15 @@ export class VpcV1 extends Service {
     deleteVPC(vpcID) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                yield deleteVPC(this.client, vpcID);
+                yield (0, vpcs_1.deleteVPC)(this.client, vpcID);
             }
             catch (e) {
-                if (e instanceof HttpError && e.statusCode === 404) {
+                if (e instanceof http_1.HttpError && e.statusCode === 404) {
                     return;
                 }
                 throw e;
             }
-            yield waitForResourceToBeDeleted(() => this.getVPC(vpcID), 60);
+            yield (0, base_1.waitForResourceToBeDeleted)(() => this.getVPC(vpcID), 60);
         });
     }
     /**
@@ -90,7 +116,7 @@ export class VpcV1 extends Service {
      */
     listSubnets(vpcID) {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield listSubnets(this.client, vpcID);
+            return yield (0, subnets_1.listSubnets)(this.client, vpcID);
         });
     }
     /**
@@ -99,7 +125,7 @@ export class VpcV1 extends Service {
      */
     getSubnet(subnetID) {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield getSubnetStatus(this.client, subnetID);
+            return yield (0, subnets_1.getSubnetStatus)(this.client, subnetID);
         });
     }
     /**
@@ -108,7 +134,7 @@ export class VpcV1 extends Service {
      */
     createSubnet(opts) {
         return __awaiter(this, void 0, void 0, function* () {
-            const { id } = yield createSubnet(this.client, opts);
+            const { id } = yield (0, subnets_1.createSubnet)(this.client, opts);
             let state = yield this.getSubnet(id);
             const statusActive = () => __awaiter(this, void 0, void 0, function* () {
                 state = yield this.getSubnet(id);
@@ -117,7 +143,7 @@ export class VpcV1 extends Service {
             if (yield statusActive()) {
                 return state;
             }
-            yield waitFor(statusActive, 120);
+            yield (0, base_1.waitFor)(statusActive, 120);
             return state;
         });
     }
@@ -132,8 +158,8 @@ export class VpcV1 extends Service {
                 const sn = yield this.getSubnet(subnetID);
                 vpcID = sn.vpc_id;
             }
-            yield deleteSubnet(this.client, vpcID, subnetID);
-            yield waitForResourceToBeDeleted(() => this.getSubnet(subnetID), 120);
+            yield (0, subnets_1.deleteSubnet)(this.client, vpcID, subnetID);
+            yield (0, base_1.waitForResourceToBeDeleted)(() => this.getSubnet(subnetID), 120);
         });
     }
     /**
@@ -145,7 +171,7 @@ export class VpcV1 extends Service {
             if (!opts) {
                 opts = {};
             }
-            return listSecurityGroups(this.client, opts);
+            return (0, secgroups_1.listSecurityGroups)(this.client, opts);
         });
     }
     /**
@@ -154,7 +180,7 @@ export class VpcV1 extends Service {
      */
     createSecurityGroup(opts) {
         return __awaiter(this, void 0, void 0, function* () {
-            return createSecurityGroup(this.client, opts);
+            return (0, secgroups_1.createSecurityGroup)(this.client, opts);
         });
     }
     /**
@@ -163,7 +189,7 @@ export class VpcV1 extends Service {
      */
     deleteSecurityGroup(id) {
         return __awaiter(this, void 0, void 0, function* () {
-            return deleteSecurityGroup(this.client, id);
+            return (0, secgroups_1.deleteSecurityGroup)(this.client, id);
         });
     }
     /**
@@ -171,9 +197,10 @@ export class VpcV1 extends Service {
      */
     listPublicIPs() {
         return __awaiter(this, void 0, void 0, function* () {
-            return listPublicIPs(this.client);
+            return (0, eips_1.listPublicIPs)(this.client);
         });
     }
 }
+exports.VpcV1 = VpcV1;
 VpcV1.type = 'vpc';
 //# sourceMappingURL=index.js.map

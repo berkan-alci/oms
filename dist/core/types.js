@@ -1,3 +1,6 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.normalizeDateTime = exports.cloud = void 0;
 /**
  * CloudConfigHelper provides helper functions to get cloud configurations
  */
@@ -34,11 +37,12 @@ class CloudConfigHelper {
  * generation witch chained methods
  * @param authURL
  */
-export function cloud(authURL) {
+function cloud(authURL) {
     return new CloudConfigHelper(authURL);
 }
+exports.cloud = cloud;
 const msRe = /(?<=\d{2})\.\d{3}(?=Z)/;
-export function normalizeDateTime(date) {
+function normalizeDateTime(date) {
     if (!date) {
         return;
     }
@@ -46,4 +50,5 @@ export function normalizeDateTime(date) {
         .toISOString()
         .replace(msRe, '');
 }
+exports.normalizeDateTime = normalizeDateTime;
 //# sourceMappingURL=types.js.map

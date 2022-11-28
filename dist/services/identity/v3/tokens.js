@@ -1,3 +1,4 @@
+"use strict";
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -7,6 +8,8 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.verifyToken = exports.createToken = void 0;
 const url = '/v3/auth/tokens';
 function optsToRequestData(opts) {
     if (!opts.password) {
@@ -52,7 +55,7 @@ function optsToRequestData(opts) {
  * @param authOptions
  * @param nocatalog - not attach catalog to token
  */
-export function createToken(client, authOptions, nocatalog) {
+function createToken(client, authOptions, nocatalog) {
     return __awaiter(this, void 0, void 0, function* () {
         const params = nocatalog ? { nocatalog: 'nocatalog' } : undefined;
         const data = optsToRequestData(authOptions);
@@ -70,13 +73,14 @@ export function createToken(client, authOptions, nocatalog) {
         return Object.assign({ id: tokenID }, token);
     });
 }
+exports.createToken = createToken;
 /**
  * Verifying a Token
  * @param client
  * @param token - tokenID to be verified
  * @param nocatalog - not attach catalog to token
  */
-export function verifyToken(client, token, nocatalog) {
+function verifyToken(client, token, nocatalog) {
     return __awaiter(this, void 0, void 0, function* () {
         const params = nocatalog ? { nocatalog: 'nocatalog' } : undefined;
         const resp = yield client.get({
@@ -88,4 +92,5 @@ export function verifyToken(client, token, nocatalog) {
         return Object.assign({ id: token }, resp.data.token);
     });
 }
+exports.verifyToken = verifyToken;
 //# sourceMappingURL=tokens.js.map

@@ -1,10 +1,13 @@
-import { normalizeDateTime } from '../../../core';
-import { Pager } from '../../base';
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.listImages = void 0;
+const core_1 = require("../../../core");
+const base_1 = require("../../base");
 function rangeToString(range) {
     if (!range) {
         return range;
     }
-    return `${range.operator}:${normalizeDateTime(range.date)}`;
+    return `${range.operator}:${(0, core_1.normalizeDateTime)(range.date)}`;
 }
 function toQueryParams(opts) {
     if (!opts) {
@@ -40,8 +43,9 @@ function toQueryParams(opts) {
         updated_at: rangeToString(opts.updated_at),
     };
 }
-export function listImages(client, opts) {
+function listImages(client, opts) {
     const params = toQueryParams(opts);
-    return new Pager({ url: '/v2/images', params: params }, client);
+    return new base_1.Pager({ url: '/v2/images', params: params }, client);
 }
+exports.listImages = listImages;
 //# sourceMappingURL=images.js.map

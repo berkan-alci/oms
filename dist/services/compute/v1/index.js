@@ -1,3 +1,4 @@
+"use strict";
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -7,14 +8,19 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-import Service from '../../base';
-import { listFlavors } from './flavors';
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.ComputeV1 = void 0;
+const base_1 = __importDefault(require("../../base"));
+const flavors_1 = require("./flavors");
 const groupInfoRe = /([\w-]+\d+)\((\w+)\)/;
 const normal = 'normal';
 /**
  * Compute v1 (ECS) service client
  */
-export class ComputeV1 extends Service {
+class ComputeV1 extends base_1.default {
     constructor(url, client) {
         super(url, client);
     }
@@ -23,7 +29,7 @@ export class ComputeV1 extends Service {
      */
     listFlavors(az) {
         return __awaiter(this, void 0, void 0, function* () {
-            const flavors = yield listFlavors(this.client, az);
+            const flavors = yield (0, flavors_1.listFlavors)(this.client, az);
             if (!az) {
                 return flavors;
             }
@@ -41,5 +47,6 @@ export class ComputeV1 extends Service {
         });
     }
 }
+exports.ComputeV1 = ComputeV1;
 ComputeV1.type = 'ecs';
 //# sourceMappingURL=index.js.map

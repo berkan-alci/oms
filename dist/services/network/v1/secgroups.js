@@ -1,3 +1,4 @@
+"use strict";
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -7,16 +8,19 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-import { joinURL } from '../../../core/http';
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.deleteSecurityGroup = exports.createSecurityGroup = exports.listSecurityGroups = void 0;
+const http_1 = require("../../../core/http");
 const url = '/security-groups';
-export function listSecurityGroups(client, opts) {
+function listSecurityGroups(client, opts) {
     return __awaiter(this, void 0, void 0, function* () {
         const resp = yield client.get({ url: url, params: opts });
         return resp.data.security_groups;
     });
 }
+exports.listSecurityGroups = listSecurityGroups;
 const sgNameRe = /^[\w\d.\-]{1,64}$/;
-export function createSecurityGroup(client, opts) {
+function createSecurityGroup(client, opts) {
     return __awaiter(this, void 0, void 0, function* () {
         if (!opts.name.match(sgNameRe)) {
             throw Error(`Invalid Security Group name: "${opts.name}".\nThe value should be a string of 1 to 64 characters that can contain letters, digits, underscores (_), hyphens (-), and periods (.).`);
@@ -25,9 +29,11 @@ export function createSecurityGroup(client, opts) {
         return resp.data.security_group;
     });
 }
-export function deleteSecurityGroup(client, id) {
+exports.createSecurityGroup = createSecurityGroup;
+function deleteSecurityGroup(client, id) {
     return __awaiter(this, void 0, void 0, function* () {
-        yield client.delete({ url: joinURL(url, id) });
+        yield client.delete({ url: (0, http_1.joinURL)(url, id) });
     });
 }
+exports.deleteSecurityGroup = deleteSecurityGroup;
 //# sourceMappingURL=secgroups.js.map

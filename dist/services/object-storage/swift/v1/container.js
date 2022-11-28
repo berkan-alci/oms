@@ -1,3 +1,4 @@
+"use strict";
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -7,12 +8,14 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-import { joinURL } from '../../../../core/http';
-import { Headers } from 'cross-fetch';
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.deleteContainer = exports.showContainerMetadata = exports.getContainer = exports.createContainer = void 0;
+const http_1 = require("../../../../core/http");
+const cross_fetch_1 = require("cross-fetch");
 const url = '';
-export function createContainer(client, name, acl, metadata) {
+function createContainer(client, name, acl, metadata) {
     return __awaiter(this, void 0, void 0, function* () {
-        const headers = new Headers();
+        const headers = new cross_fetch_1.Headers();
         if (acl) {
             if (acl.read) {
                 headers.append('X-ContainerMetadata-Read', acl.read);
@@ -27,11 +30,12 @@ export function createContainer(client, name, acl, metadata) {
             }
         }
         yield client.put({
-            url: joinURL(url, name),
+            url: (0, http_1.joinURL)(url, name),
             headers: headers,
         });
     });
 }
+exports.createContainer = createContainer;
 const metadataPrefix = 'X-Container-Meta-'.toLowerCase();
 function parseContainerHeaders(name, headers) {
     const metadata = {};
@@ -64,21 +68,24 @@ function parseContainerHeaders(name, headers) {
         metadata: metadata,
     };
 }
-export function getContainer(client, name, opts) {
+function getContainer(client, name, opts) {
     return __awaiter(this, void 0, void 0, function* () {
-        const resp = yield client.get({ url: joinURL(url, name), params: opts });
+        const resp = yield client.get({ url: (0, http_1.joinURL)(url, name), params: opts });
         return Object.assign(Object.assign({}, parseContainerHeaders(name, resp.headers)), resp.data);
     });
 }
-export function showContainerMetadata(client, name) {
+exports.getContainer = getContainer;
+function showContainerMetadata(client, name) {
     return __awaiter(this, void 0, void 0, function* () {
-        const resp = yield client.head({ url: joinURL(url, name) });
+        const resp = yield client.head({ url: (0, http_1.joinURL)(url, name) });
         return parseContainerHeaders(name, resp.headers);
     });
 }
-export function deleteContainer(client, name) {
+exports.showContainerMetadata = showContainerMetadata;
+function deleteContainer(client, name) {
     return __awaiter(this, void 0, void 0, function* () {
-        yield client.delete({ url: joinURL(url, name) });
+        yield client.delete({ url: (0, http_1.joinURL)(url, name) });
     });
 }
+exports.deleteContainer = deleteContainer;
 //# sourceMappingURL=container.js.map

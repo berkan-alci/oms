@@ -1,3 +1,4 @@
+"use strict";
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -7,12 +8,15 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.listFlavors = void 0;
 const listURL = '/cloudservers/flavors';
-export function listFlavors(client, az) {
+function listFlavors(client, az) {
     return __awaiter(this, void 0, void 0, function* () {
         const params = az ? { availability_zone: az } : undefined;
         const resp = yield client.get({ url: listURL, params: params });
         return resp.data.flavors;
     });
 }
+exports.listFlavors = listFlavors;
 //# sourceMappingURL=flavors.js.map

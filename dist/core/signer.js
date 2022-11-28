@@ -1,14 +1,40 @@
-import sha256, { hmac } from 'fast-sha256';
-import { Headers } from 'cross-fetch';
+"use strict";
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.getSignHeaders = void 0;
+const fast_sha256_1 = __importStar(require("fast-sha256"));
+const cross_fetch_1 = require("cross-fetch");
 const signAlgorithmHMACSHA256 = 'SDK-HMAC-SHA256';
 const dateFormat = /-|:|\..{3}/g;
 const encoder = new TextEncoder();
-export function getSignHeaders(credentials, request, date = new Date(), body = '') {
+function getSignHeaders(credentials, request, date = new Date(), body = '') {
     let currentDate = date.toISOString().replace(dateFormat, '');
     if (!currentDate) {
         currentDate = new Date().toISOString().replace(dateFormat, '');
     }
-    const newHeaders = new Headers(request.headers);
+    const newHeaders = new cross_fetch_1.Headers(request.headers);
     newHeaders.set('Host', request.url.host);
     newHeaders.append('X-Sdk-Date', currentDate);
     const stringifiedHeaders = sortedStringifiedHeaders(newHeaders);
@@ -27,7 +53,7 @@ export function getSignHeaders(credentials, request, date = new Date(), body = '
         signedHeaders: signedHeaders,
         body: body,
     });
-    const hash = sha256(encoder.encode(canonicalRequest));
+    const hash = (0, fast_sha256_1.default)(encoder.encode(canonicalRequest));
     const stringToSign = getStringToSign({
         iso8601: currentDate,
         yyyymmdd: yyyymmdd,
@@ -49,6 +75,7 @@ export function getSignHeaders(credentials, request, date = new Date(), body = '
         /* eslint-enable */
     };
 }
+exports.getSignHeaders = getSignHeaders;
 /**
  * Stringify and sort http headers
  * @returns {Array<string>}
@@ -86,7 +113,7 @@ function getQueryString(params) {
  * Get Canonical request.
  */
 function getCanonicalRequest(params) {
-    const bodyHash = sha256(encoder.encode(params.body));
+    const bodyHash = (0, fast_sha256_1.default)(encoder.encode(params.body));
     if (!params.url.pathname) {
         params.url.pathname = '/';
     }
@@ -108,10 +135,10 @@ function getStringToSign(params) {
 }
 function getSigningKey(params) {
     try {
-        const kDate = hmac(encoder.encode(`SDK${params.secretAccessKey}`), encoder.encode(params.dateStamp));
-        const kRegion = hmac(kDate, encoder.encode(params.regionName));
-        const kService = hmac(kRegion, encoder.encode(params.serviceName));
-        return hmac(kService, encoder.encode('sdk_request'));
+        const kDate = (0, fast_sha256_1.hmac)(encoder.encode(`SDK${params.secretAccessKey}`), encoder.encode(params.dateStamp));
+        const kRegion = (0, fast_sha256_1.hmac)(kDate, encoder.encode(params.regionName));
+        const kService = (0, fast_sha256_1.hmac)(kRegion, encoder.encode(params.serviceName));
+        return (0, fast_sha256_1.hmac)(kService, encoder.encode('sdk_request'));
     }
     catch (e) {
         // eslint-disable-next-line @typescript-eslint/ban-ts-comment
@@ -120,6 +147,6 @@ function getSigningKey(params) {
     }
 }
 function getSignature(keyBuffer, stringToSign) {
-    return Buffer.from(hmac(keyBuffer, encoder.encode(stringToSign))).toString('hex');
+    return Buffer.from((0, fast_sha256_1.hmac)(keyBuffer, encoder.encode(stringToSign))).toString('hex');
 }
 //# sourceMappingURL=signer.js.map

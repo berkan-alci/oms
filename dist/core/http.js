@@ -1,3 +1,27 @@
+"use strict";
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -7,35 +31,42 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.joinURL = exports.Handlers = exports.RequestOpts = exports.mergeHeaders = exports.RequestError = exports.HttpError = void 0;
 /**
  * Simple implementation of HTTP client based on `fetch` with
  * possibility to inject pre-request configuration handlers
  */
-import cloneDeep from 'lodash/cloneDeep';
-import isEmpty from 'lodash/isEmpty';
-import { stringifyUrl } from 'query-string';
-import { validate } from 'json-schema';
-import fetch, { Headers } from 'cross-fetch';
+const cloneDeep_1 = __importDefault(require("lodash/cloneDeep"));
+const isEmpty_1 = __importDefault(require("lodash/isEmpty"));
+const query_string_1 = require("query-string");
+const json_schema_1 = require("json-schema");
+const cross_fetch_1 = __importStar(require("cross-fetch"));
 const absUrlRe = /^https?:\/\/.+/;
-export class HttpError extends Error {
+class HttpError extends Error {
     constructor(statusCode, message) {
         super(message);
         this.name = 'HTTPError';
         this.statusCode = statusCode;
     }
 }
-export class RequestError extends Error {
+exports.HttpError = HttpError;
+class RequestError extends Error {
 }
+exports.RequestError = RequestError;
 /**
  * Convert input header-like object to list of headers
  */
 function normalizeHeaders(src) {
-    const result = new Headers();
+    const result = new cross_fetch_1.Headers();
     if (!src) {
         return result;
     }
-    if (src instanceof Headers) {
-        return new Headers(src);
+    if (src instanceof cross_fetch_1.Headers) {
+        return new cross_fetch_1.Headers(src);
     }
     Object.entries(src)
         .forEach(e => {
@@ -48,9 +79,9 @@ function normalizeHeaders(src) {
 /**
  * Merge existing sets of headers producing new Headers instance
  */
-export function mergeHeaders(one, two) {
+function mergeHeaders(one, two) {
     if (!one && !two) {
-        return new Headers();
+        return new cross_fetch_1.Headers();
     }
     const headers = normalizeHeaders(one);
     if (two) {
@@ -62,10 +93,11 @@ export function mergeHeaders(one, two) {
     }
     return headers;
 }
+exports.mergeHeaders = mergeHeaders;
 /**
  * This is presentation of prepared request opts
  */
-export class RequestOpts {
+class RequestOpts {
     constructor(abs) {
         // check absolutely minimal requirements:
         if (!abs.method) {
@@ -97,8 +129,9 @@ export class RequestOpts {
         this.schema = abs.schema ? abs.schema : {};
     }
 }
+exports.RequestOpts = RequestOpts;
 function prepareConfig(base) {
-    const baseConfig = base && !isEmpty(base) ? cloneDeep(base) : {};
+    const baseConfig = base && !(0, isEmpty_1.default)(base) ? (0, cloneDeep_1.default)(base) : {};
     baseConfig.headers = mergeHeaders(baseConfig.headers);
     return baseConfig;
 }
@@ -109,7 +142,7 @@ function prepareConfig(base) {
  * this handler absolutely _must_ be the first or the last one.
  * Otherwise just use `.push(...)` to add the handler
  */
-export class Handlers {
+class Handlers {
     constructor() {
         this.peloton = [];
     }
@@ -120,7 +153,8 @@ export class Handlers {
         this.peloton.push(handler);
     }
 }
-export default class HttpClient {
+exports.Handlers = Handlers;
+class HttpClient {
     constructor(baseConfig) {
         this.baseConfig = prepareConfig(baseConfig);
         this.beforeRequest = new Handlers();
@@ -129,7 +163,7 @@ export default class HttpClient {
      * Create new HttpClient inheriting all client settings
      */
     child(overrideConfig) {
-        const client = cloneDeep(this);
+        const client = (0, cloneDeep_1.default)(this);
         client.baseConfig = overrideConfig ? prepareConfig(overrideConfig) : prepareConfig();
         return client;
     }
@@ -165,7 +199,7 @@ export default class HttpClient {
             }
             // append query params
             if (merged.params) {
-                url = stringifyUrl({
+                url = (0, query_string_1.stringifyUrl)({
                     url,
                     query: merged.params,
                 }, { encode: true, skipNull: true });
@@ -179,7 +213,7 @@ export default class HttpClient {
                 merged = this.beforeRequest.last(merged);
             }
             url = merged.url;
-            const response = yield fetch(url, merged);
+            const response = yield (0, cross_fetch_1.default)(url, merged);
             if (!response.ok) {
                 const strHeaders = {};
                 merged.headers.forEach((v, k) => {
@@ -210,7 +244,7 @@ export default class HttpClient {
                 // will be validated against own 'schema' field, if one is provided
                 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
                 //@ts-ignore
-                const result = validate(response.data, merged.schema);
+                const result = (0, json_schema_1.validate)(response.data, merged.schema);
                 if (!result.valid) {
                     throw Error(`Failed JSON Schema validation: ${result.errors}`);
                 }
@@ -249,6 +283,7 @@ export default class HttpClient {
         });
     }
 }
+exports.default = HttpClient;
 function isJsonResponse(r) {
     const ct = r.headers.get('content-type');
     if (!ct) {
@@ -257,7 +292,7 @@ function isJsonResponse(r) {
     return ct.startsWith('application/json');
 }
 const barePartRe = /^\/*(.+?)\/*$/;
-export function joinURL(...parts) {
+function joinURL(...parts) {
     const urls = [];
     for (const p of parts) {
         const matches = p.match(barePartRe);
@@ -268,4 +303,5 @@ export function joinURL(...parts) {
     }
     return urls.join('/');
 }
+exports.joinURL = joinURL;
 //# sourceMappingURL=http.js.map
