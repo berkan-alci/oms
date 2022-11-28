@@ -114,6 +114,8 @@ function getSigningKey(params) {
         return hmac(kService, encoder.encode('sdk_request'));
     }
     catch (e) {
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        //@ts-ignore
         throw new Error(`Failed to generate signature key: ${e.message}`);
     }
 }
